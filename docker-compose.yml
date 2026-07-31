@@ -1,17 +1,25 @@
 services:
   crowdsec:
     image: crowdsecurity/crowdsec:latest
-    container_name: crowdsec
+    container_name: crowdsec-lab
     restart: unless-stopped
-    ports:
-      - "8080:8080"
+
     environment:
-      - TZ=${TZ}
+      TZ: ${TZ:-America/Sao_Paulo}
+      COLLECTIONS: ${COLLECTIONS:-crowdsecurity/linux crowdsecurity/sshd}
+
+    ports:
+      - "127.0.0.1:${CROWDSEC_LAPI_PORT:-8080}:8080"
+
     volumes:
-      - ./config:/etc/crowdsec
-      - ./data:/var/lib/crowdsec/data
-      - ./acquisitions:/etc/crowdsec/acquis.d
-      - ./collections:/etc/crowdsec/collections
-      - ./scenarios:/etc/crowdsec/scenarios
-      - ./parsers:/etc/crowdsec/parsers
-      - ./logs:/logs
+      # Configuração e banco persistentes gerenciados pelo Docker.
+      - crowdsec-config:/etc/crowdsec
+      - crowdsec-data:/var/lib/crowdsec/data
+
+      # Aquisição didática: lê arquivos .log da pasta local logs/.
+      - ./acquisitions/lab-logs.yaml:/etc/crowdsec/acquis.d/lab-logs.yaml:ro
+      - ./logs:/var/log/crowdsec-lab:ro
+
+volumes:
+  crowdsec-config:
+  crowdsec-data:
