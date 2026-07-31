@@ -1,0 +1,17 @@
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ./config:/etc/crowdsec
+      - ./data:/var/lib/crowdsec/data
+      - ./acquisitions:/etc/crowdsec/acquis.d
+      - ./collections:/etc/crowdsec/collections
+      - ./scenarios:/etc/crowdsec/scenarios
+      - ./parsers:/etc/crowdsec/parsers
+      - ./logs:/logs
