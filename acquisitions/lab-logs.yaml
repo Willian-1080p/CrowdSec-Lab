@@ -1,0 +1,7 @@
+source: file
+filenames:
+  - /var/log/crowdsec-lab/*.log
+force_inotify: true
+labels:
+  type: syslog
+  service: crowdsec-lab
